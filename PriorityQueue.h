@@ -1,6 +1,6 @@
 #ifndef PRIORITYQUEUE_H
 #define PRIORITYQUEUE_H
-
+// MaxHeap
 template<typename T>
 class PriorityQueue
 {
@@ -15,8 +15,8 @@ public:
 	~PriorityQueue();
 
 	void insert(T item);
-	T extractMin() throw(...); 
-
+	T extractMax() throw(...); 
+	bool isEmpty() const;
 	void printArr()const;
 };
 #endif // !PRIORITYQUEUE_H
@@ -54,7 +54,7 @@ template<typename T>
 void PriorityQueue<T>::insert(T item)
 {
 	int iWalker = ++mNrOfItems;
-	for ( ; iWalker > 1 && item < mItemArray[iWalker / 2]; iWalker /= 2)
+	for ( ; iWalker > 1 && mItemArray[iWalker / 2] < item; iWalker /= 2)
 	{
 		mItemArray[iWalker] = mItemArray[iWalker / 2];
 	}
@@ -62,7 +62,7 @@ void PriorityQueue<T>::insert(T item)
 }
 
 template<typename T>
-T PriorityQueue<T>::extractMin() throw(...)
+T PriorityQueue<T>::extractMax() throw(...)
 {
 	if (mNrOfItems == 0)
 	{
@@ -71,21 +71,21 @@ T PriorityQueue<T>::extractMin() throw(...)
 
 	mItemArray[0] = mItemArray[1];
 	int iWalker = 1;
-	int smallest;
+	int biggest;
 	bool reSortDone = false;
 	while (!reSortDone)
 	{
 		if (iWalker * 2 + 1 < mNrOfItems) // if node has 2 children
 		{
-			if (mItemArray[iWalker * 2] < mItemArray[iWalker * 2 + 1]) 
-				smallest = iWalker * 2;
+			if (mItemArray[iWalker * 2 + 1] < mItemArray[iWalker * 2])
+				biggest = iWalker * 2;
 			else
-				smallest  = iWalker * 2 + 1;
+				biggest  = iWalker * 2 + 1;
 
-			if (mItemArray[smallest] < mItemArray[mNrOfItems])
+			if (mItemArray[mNrOfItems] < mItemArray[biggest])
 			{
-				mItemArray[iWalker] = mItemArray[smallest];
-				iWalker = smallest;
+				mItemArray[iWalker] = mItemArray[biggest];
+				iWalker = biggest;
 			}
 			else
 			{
@@ -96,7 +96,7 @@ T PriorityQueue<T>::extractMin() throw(...)
 		}
 		else if (iWalker * 2 < mNrOfItems) // if node has 1 child)
 		{
-			if (mItemArray[iWalker * 2] < mItemArray[mNrOfItems])
+			if (mItemArray[mNrOfItems] < mItemArray[iWalker * 2])
 			{
 				mItemArray[iWalker] = mItemArray[iWalker * 2];
 				iWalker *= 2;		      
@@ -115,6 +115,12 @@ T PriorityQueue<T>::extractMin() throw(...)
 	}
 	mNrOfItems--;
 	return mItemArray[0];
+}
+
+template<typename T>
+inline bool PriorityQueue<T>::isEmpty() const
+{
+	return mNrOfItems == 0;
 }
 
 template<typename T>

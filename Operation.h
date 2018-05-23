@@ -15,6 +15,7 @@ public:
 	int getId() const;
 	std::string getSubSpeciality() const;
 	int getTime() const;
+	std::string toString() const;
 
 };
 

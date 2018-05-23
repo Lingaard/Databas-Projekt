@@ -31,4 +31,9 @@ int Operation::getTime() const
 	return mTime;
 }
 
+std::string Operation::toString() const
+{
+	return std::to_string(mId) + " " + mSubSpecialty + " " + std::to_string(mTime);
+}
+
 
