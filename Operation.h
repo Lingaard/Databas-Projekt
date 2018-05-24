@@ -12,6 +12,7 @@ public:
 	Operation(int id = 0, std::string sub = "", int time = 0);
 	virtual~Operation();
 	bool operator<(const Operation& other) const;
+	
 	int getId() const;
 	std::string getSubSpeciality() const;
 	int getTime() const;

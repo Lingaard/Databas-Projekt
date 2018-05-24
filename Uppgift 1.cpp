@@ -10,36 +10,13 @@ void readFromFile(std::string fileDir, PriorityQueue<Operation>&pq);
 int main()
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//PriorityQueue<Operation> pq;
-
-	//readFromFile("../Projektuppgiften/Operationer_1a.txt", pq);
-	//
-	//while (!pq.isEmpty())
-	//{
-	//	std::cout << pq.extractMax().toString() << std::endl;
-	//}
 	
-	Bin<int> bin(200);
+	PriorityQueue<Operation> pq;
 
-		bin.insertAt(4, 100);
-	try 
-	{
-	bin.insertAt(2, 10);
-	}
-	catch (const char* e)
-	{
-		std::cout << e << std::endl;
-	}
-	std::cout << bin.extractAt(0) << std::endl;
-	std::cout << bin.extractAt(0) << std::endl;
-	try
-	{
-		std::cout << bin.extractAt(0) << std::endl;
-	}
-	catch (const char* e)
-	{
-		std::cout << e << std::endl;
-	}
+	readFromFile("../Projektuppgiften/Operationer_1a.txt", pq);
+
+
+
 	getchar();
 	return 0;
 }
