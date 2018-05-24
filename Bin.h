@@ -1,23 +1,14 @@
 #ifndef BIN_H
 #define BIN_H
 #include "List.h"
+#include "Item.h"
 template<typename T>
 class Bin
 {
 private:
-	class Item
-	{
-	public:
-		T mElement;
-		int mValue;
-		Item();
-		Item(T element, int value);
-		virtual~Item();
-		bool operator<(const Item& other);
-		bool operator<(const int other) const;
-	};
 
-	List<Item> mItems;
+
+	List<Item<T>> mItems;
 	int mNrOfItems;
 
 	int mSpaceLeft;
@@ -29,50 +20,20 @@ public:
 
 	void setSpace(int space);
 	int getSpace() const;
+	int getNrOfItems() const;
 	bool isEmpty() const;
 	T getAt(int pos) const throw(...);
-	void getAll(T arr[], int cap) throw(...);
+	void getAll(Item<T> arr[], int cap) throw(...);
 	T extractAt(int pos) throw(...);
-	void insertAt(T element, int value, int pos = 0) throw(...);
-	void insertSort(T element, int value);
+	bool insertAt(T element, int value, int pos = 0) throw(...);
+	bool insertAt(Item<T> item, int pos = 0) throw(...);
+	bool insertSort(T element, int value);
+	bool insertSort(Item<T> item);
 
 };
 
 #endif // !BIN_H
 
-// Item functions
-template<typename T>
-inline Bin<T>::Item::Item()
-{
-	mElement = T();
-	mValue = 0;
-}
-
-template<typename T>
-inline Bin<T>::Item::Item(T element, int value)
-{
-	mElement = element;
-	mValue = value;
-}
-
-template<typename T>
-inline Bin<T>::Item::~Item()
-{
-}
-
-template<typename T>
-inline bool Bin<T>::Item::operator<(const Item & other)
-{
-	return mValue < other.mValue;
-}
-
-template<typename T>
-inline bool Bin<T>::Item::operator<(const int other) const
-{
-	return mValue < other;
-}
-
-// Bin functions
 template<typename T>
 inline Bin<T>::Bin(int space)
 {
@@ -98,29 +59,54 @@ inline T Bin<T>::extractAt(int pos) throw(...)
 
 // Insert at position
 template<typename T>
-inline void Bin<T>::insertAt(T element, int value, int pos) throw(...)
+inline bool Bin<T>::insertAt(T element, int value, int pos) throw(...)
+{
+	insertAt(Item<T>(element, value, pos));
+}
+
+template<typename T>
+inline bool Bin<T>::insertAt(Item<T> item, int pos) throw(...)
 {
 	if (pos < 0 || mNrOfItems < pos)
 		throw "Position outside of range";
-
-	mItems.insertAt(pos, Item(element, value));
-	mNrOfItems++;
-	mSpaceLeft -= value;
+	
+	bool insertSuccess = false;
+	if (mSpaceLeft - item.mValue >= 0)
+	{
+		insertSuccess = true;
+		mItems.insertAt(pos, item);
+		mNrOfItems++;
+		mSpaceLeft -= item.mValue;
+	}
+	return insertSuccess;
 }
 
 // Insert with insertionsort
 template<typename T>
-inline void Bin<T>::insertSort(T element, int value)
+inline bool Bin<T>::insertSort(T element, int value)
 {
-	int iWalker = 0;
-	Item* arr = new Item[mItems.length()];
-	mItems.getAll(arr, mItems.length());
-	while (arr[iWalker] < value)
-		iWalker++;
-	mItems.insertAt(iWalker, Item(element, value));
-	mNrOfItems++;
-	mSpaceLeft -= value;
-	delete[]arr;
+	insertSort(Item<T>(element, value));
+}
+
+template<typename T>
+inline bool Bin<T>::insertSort(Item<T> item)
+{
+	bool insertSuccess = false;
+	if (mSpaceLeft - item.mValue >= 0)
+	{
+		insertSuccess = true;
+		int iWalker = 0;
+		Item* arr = new Item[mItems.length()];
+		mItems.getAll(arr, mItems.length());
+		while (arr[iWalker] < item.mValue)
+			iWalker++;
+
+		mItems.insertAt(iWalker, item);
+		mNrOfItems++;
+		mSpaceLeft -= item.mValue;
+		delete[]arr;
+	}
+	return insertSuccess;
 }
 
 template<typename T>
@@ -133,7 +119,7 @@ inline T Bin<T>::getAt(int pos) const throw(...)
 }
 
 template<typename T>
-inline void Bin<T>::getAll(T arr[], int cap) throw(...)
+inline void Bin<T>::getAll(Item<T> arr[], int cap) throw(...)
 {
 	if (cap < mNrOfItems)
 		throw "Array too small.";
@@ -151,6 +137,12 @@ template<typename T>
 inline int Bin<T>::getSpace() const
 {
 	return mSpaceLeft;
+}
+
+template<typename T>
+inline int Bin<T>::getNrOfItems() const
+{
+	return mNrOfItems;
 }
 
 template<typename T>
