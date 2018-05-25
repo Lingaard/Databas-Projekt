@@ -42,7 +42,15 @@ int main()
 		{
 			std::cout << ops2[i].toString() << std::endl;
 		}
-		std::cout << std::endl;
+
+		std::cout << "Time left in room: " << bh.getSpaceInBin(j) << std::endl << std::endl;
+	}
+
+	std::cout << std::endl << std::endl << "ops left:" << std::endl;
+
+	for (int i = 0; i < bh.mNrOfItems; i++)
+	{
+		std::cout << bh.mItems[i].mElement.toString() << std::endl;
 	}
 
 
