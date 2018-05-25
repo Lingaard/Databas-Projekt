@@ -48,10 +48,7 @@ int main()
 
 	std::cout << std::endl << std::endl << "ops left:" << std::endl;
 
-	for (int i = 0; i < bh.mNrOfItems; i++)
-	{
-		std::cout << bh.mItems[i].mElement.toString() << std::endl;
-	}
+	
 
 
 

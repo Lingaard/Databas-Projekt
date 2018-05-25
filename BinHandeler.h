@@ -13,6 +13,7 @@ private:
 
 	void binToItems(int iBin, int iItem);
 	void itemToBin(int iItem, int Bin);
+	void reAssign(int item[], int iPtr, int nrOfPtrs = 2);
 public:
 	BinHandeler(int nrOfBins = 1, int nrOfItems = 20, int spaceInBin = 100);
 	BinHandeler(int nrOfBins, int nrOfItems, int spaceInBins[]);
@@ -35,13 +36,26 @@ inline void BinHandeler<T>::binToItems(int iBin, int iItem)
 	for (i = mNrOfItems++; mItems[i - 1] < item; i--)
 	{
 		mItems[i] = mItems[i - 1];
-	}
+	}S
 	mItems[i] = item;
 }
 
 template<typename T>
 inline void BinHandeler<T>::itemToBin(int iItem, int Bin)
 {
+
+}
+
+template<typename T>
+inline void BinHandeler<T>::reAssign(int item[], int iPtr, int nrOfPtrs)
+{
+	if (iPtr >= 0)
+	{
+		for (int i = 0; i < mNrOfItems; i++)
+		{
+			reAssign()
+		}
+	}
 
 }
 
@@ -176,7 +190,7 @@ inline void BinHandeler<T>::reAssign(int nrOfPtrs)
 	// loop until no changes are made
 		// for all bins 
 			// for all groups of nrOfPtrs large, try to switch with items in bins that fits and is bigger
-
+/*
 	bool changed = false;
 	int* iItem = new int[nrOfPtrs];
 	do
@@ -191,7 +205,11 @@ inline void BinHandeler<T>::reAssign(int nrOfPtrs)
 
 	} while (changed == true);
 
-	delete[]iItem;
+	delete[]iItem;*/
+	int* pos = new int[nrOfPtrs];
+	reAssign(pos, nrOfPtrs - 1, nrOfPtrs);
+
+	delete[]pos;
 }
 
 
