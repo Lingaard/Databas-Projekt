@@ -21,10 +21,10 @@ public:
 	void setSpace(int space);
 	int getSpace() const;
 	int getNrOfItems() const;
-	bool isEmpty() const;
-	T getAt(int pos) const throw(...);
+	bool isEmpty() const;	
+	Item<T> getAt(int pos) const throw(...);
 	void getAll(Item<T> arr[], int cap) throw(...);
-	T extractAt(int pos) throw(...);
+	Item<T> extractAt(int pos) throw(...);
 	bool insertAt(T element, int value, int pos = 0) throw(...);
 	bool insertAt(Item<T> item, int pos = 0) throw(...);
 	bool insertSort(T element, int value);
@@ -47,12 +47,13 @@ inline Bin<T>::~Bin()
 }
 
 template<typename T>
-inline T Bin<T>::extractAt(int pos) throw(...)
+inline Item<T> Bin<T>::extractAt(int pos) throw(...)
 {
 	if (pos < 0 || mNrOfItems - 1 < pos)
 		throw "Position outside of range";
-	T temp = mItems.getAt(pos).mElement;
+	Item<T> temp = mItems.getAt(pos);
 	mItems.removeAt(pos);
+	mSpaceLeft += temp.getValue();
 	mNrOfItems--;
 	return temp;
 }
@@ -71,12 +72,12 @@ inline bool Bin<T>::insertAt(Item<T> item, int pos) throw(...)
 		throw "Position outside of range";
 	
 	bool insertSuccess = false;
-	if (mSpaceLeft - item.mValue >= 0)
+	if (mSpaceLeft - item.getValue() >= 0)
 	{
 		insertSuccess = true;
 		mItems.insertAt(pos, item);
 		mNrOfItems++;
-		mSpaceLeft -= item.mValue;
+		mSpaceLeft -= item.getValue();
 	}
 	return insertSuccess;
 }
@@ -92,25 +93,25 @@ template<typename T>
 inline bool Bin<T>::insertSort(Item<T> item)
 {
 	bool insertSuccess = false;
-	if (mSpaceLeft - item.mValue >= 0)
+	if (mSpaceLeft - item.getValue() >= 0)
 	{
 		insertSuccess = true;
 		int iWalker = 0;
-		Item* arr = new Item[mItems.length()];
+		Item<T>* arr = new Item<T>[mItems.length()];
 		mItems.getAll(arr, mItems.length());
-		while (arr[iWalker] < item.mValue)
+		while (arr[iWalker] < item.getValue())
 			iWalker++;
 
 		mItems.insertAt(iWalker, item);
 		mNrOfItems++;
-		mSpaceLeft -= item.mValue;
+		mSpaceLeft -= item.getValue();
 		delete[]arr;
 	}
 	return insertSuccess;
 }
 
 template<typename T>
-inline T Bin<T>::getAt(int pos) const throw(...)
+inline Item<T> Bin<T>::getAt(int pos) const throw(...)
 {
 	if (pos < 0 || mNrOfItems - 1 < pos)
 		throw "Position outside of range";

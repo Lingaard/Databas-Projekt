@@ -46,10 +46,29 @@ int main()
 		std::cout << "Time left in room: " << bh.getSpaceInBin(j) << std::endl << std::endl;
 	}
 
-	std::cout << std::endl << std::endl << "ops left:" << std::endl;
+	for (int i = 5; i > 0; i--)
+		bh.reAssign(i);
+	std::cout << "Print after resorting: " << std::endl;
 
-	
+	for (int j = 0; j < 3; j++)
+	{
+		Operation ops2[10];
+		try
+		{
+			bh.getBin(ops2, 20, j);
+		}
+		catch (const char* e)
+		{
+			std::cout << e;
+		}
 
+		for (int i = 0; i < 10; i++)
+		{
+			std::cout << ops2[i].toString() << std::endl;
+		}
+
+		std::cout << "Time left in room: " << bh.getSpaceInBin(j) << std::endl << std::endl;
+	}
 
 
 	getchar();

@@ -3,12 +3,17 @@
 template<typename T>
 class Item
 {
-public:
+private:
 	T mElement;
 	int mValue;
+
+public:
 	Item();
 	Item(T element, int value);
 	virtual~Item();
+
+	T getElement() const;
+	int getValue() const;
 	bool operator<(const Item& other);
 	bool operator<(const int other) const;
 };
@@ -31,6 +36,18 @@ inline Item<T>::Item(T element, int value)
 template<typename T>
 inline Item<T>::~Item()
 {
+}
+
+template<typename T>
+inline T Item<T>::getElement() const
+{
+	return mElement;
+}
+
+template<typename T>
+inline int Item<T>::getValue() const
+{
+	return mValue;
 }
 
 template<typename T>
