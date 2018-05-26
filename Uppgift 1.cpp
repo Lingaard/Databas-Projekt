@@ -46,7 +46,7 @@ int main()
 		std::cout << "Time left in room: " << bh.getSpaceInBin(j) << std::endl << std::endl;
 	}
 
-	for (int i = 5; i > 0; i--)
+	for (int i = 1; i < 4; i++)
 		bh.reAssign(i);
 	std::cout << "Print after resorting: " << std::endl;
 

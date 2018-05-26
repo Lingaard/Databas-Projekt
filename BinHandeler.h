@@ -66,12 +66,14 @@ inline void BinHandeler<T>::itemToBin(int iItem, int iBin)
 template<typename T>
 inline bool BinHandeler<T>::reAssign(int pos[], int iPtr, int nrOfPtrs)
 {
+	// If a change occurs function returns true which stops and restarts the function.
+	// Otherwise returns false and move on.
 	if (iPtr < nrOfPtrs)
 	{
-		for (; pos[iPtr] < mNrOfItems - 1 - (nrOfPtrs - iPtr); pos[iPtr]++)
+		for (; pos[iPtr] < mNrOfItems - (nrOfPtrs - 1 - iPtr); pos[iPtr]++)
 		{
-			if (reAssign(pos, iPtr + 1, nrOfPtrs))
-				return true;
+			if (reAssign(pos, iPtr + 1, nrOfPtrs) == true)
+				return true; 
 		}
 	}
 	else
