@@ -9,7 +9,8 @@ private:
 	int mTime;
 
 public:
-	Operation(int id = 0, std::string sub = "", int time = 0);
+	Operation(int id, std::string sub = "", int time = 0);
+	Operation();
 	virtual~Operation();
 	bool operator<(const Operation& other) const;
 	

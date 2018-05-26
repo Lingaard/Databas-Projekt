@@ -26,7 +26,7 @@ void PriorityQueue<T>::expand()
 {
 	mItemsCap *= 2;
 	T* temp = new T[mItemsCap];
-	for (int i = 0; i <= mNrOfItems; i++)
+	for (int i = 1; i <= mNrOfItems; i++)
 	{
 		temp[i] = mItemArray[i];
 	}
@@ -38,7 +38,7 @@ void PriorityQueue<T>::expand()
 template<typename T>
 PriorityQueue<T>::PriorityQueue()
 {
-	mItemsCap = 32;
+	mItemsCap = 5;
 	mNrOfItems = 0;
 	mItemArray = new T[mItemsCap];
 }
@@ -53,6 +53,8 @@ PriorityQueue<T>::~PriorityQueue()
 template<typename T>
 void PriorityQueue<T>::insert(T item)
 {
+	if (mNrOfItems == mItemsCap-1)
+		expand();
 	int iWalker = ++mNrOfItems;
 	for ( ; iWalker > 1 && mItemArray[iWalker / 2] < item; iWalker /= 2)
 	{

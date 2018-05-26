@@ -7,6 +7,13 @@ Operation::Operation(int id, std::string sub, int time)
 	mTime = time;
 }
 
+Operation::Operation()
+{
+	mId = 0;
+	mSubSpecialty = "";
+	mTime = 100;
+}
+
 Operation::~Operation()
 {
 }

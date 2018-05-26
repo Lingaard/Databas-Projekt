@@ -17,9 +17,10 @@ private:
 	bool reAssign(int item[], int iPtr, int nrOfPtrs = 2);
 public:
 	BinHandeler(int nrOfBins = 1, int nrOfItems = 20, int spaceInBin = 100);
-	BinHandeler(int nrOfBins, int nrOfItems, int spaceInBins[]);
+	BinHandeler(int nrOfBins, int nrOfDays, int nrOfItems, int spaceInBins[]);
 	~BinHandeler();
 
+	int getNrOfItemsInBin(int iBin) const;
 	void insertItemsFromArray(T elementArr[], int spaceArr[], int nrOfItems);
 	void putItemsInBins();
 	void getBin(T element[], int cap, int iBin) throw(...);
@@ -119,21 +120,19 @@ inline BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfItems, int spaceInBin)
 	{
 		mBins[i].setSpace(spaceInBin);
 	}
-
-
 }
 
 template<typename T>
-inline BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfItems, int spaceInBins[])
+inline BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfDays, int nrOfItems, int spaceInBins[])
 {
-	mBins = new Bin<T>[nrOfBins];
-	mNrOfBins = nrOfBins;
+	mBins = new Bin<T>[nrOfBins*nrOfDays];
+	mNrOfBins = nrOfBins*nrOfDays;
 	mNrOfItems = nrOfItems;
 	mItems = new Item<T>[nrOfItems];
 
 	for (int i = 0; i < mNrOfBins; i++)
 	{
-		mBins[i].setSpace(spaceInBins[i]);
+		mBins[i].setSpace(spaceInBins[i%nrOfBins]);
 	}
 }
 
@@ -142,6 +141,12 @@ inline BinHandeler<T>::~BinHandeler()
 {
 	delete[]mBins;
 	delete[]mItems;
+}
+
+template<typename T>
+inline int BinHandeler<T>::getNrOfItemsInBin(int iBin) const
+{
+	return mBins[iBin].getNrOfItems();
 }
 
 template<typename T>
