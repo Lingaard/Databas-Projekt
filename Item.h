@@ -20,44 +20,44 @@ public:
 
 // Item functions
 template<typename T>
-inline Item<T>::Item::Item()
+Item<T>::Item::Item()
 {
 	mElement = T();
 	mValue = 0;
 }
 
 template<typename T>
-inline Item<T>::Item(T element, int value)
+Item<T>::Item(T element, int value)
 {
 	mElement = element;
 	mValue = value;
 }
 
 template<typename T>
-inline Item<T>::~Item()
+Item<T>::~Item()
 {
 }
 
 template<typename T>
-inline T Item<T>::getElement() const
+T Item<T>::getElement() const
 {
 	return mElement;
 }
 
 template<typename T>
-inline int Item<T>::getValue() const
+int Item<T>::getValue() const
 {
 	return mValue;
 }
 
 template<typename T>
-inline bool Item<T>::operator<(const Item & other)
+bool Item<T>::operator<(const Item & other)
 {
 	return mValue < other.mValue;
 }
 
 template<typename T>
-inline bool Item<T>::operator<(const int other) const
+bool Item<T>::operator<(const int other) const
 {
 	return mValue < other;
 }

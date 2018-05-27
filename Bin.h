@@ -35,19 +35,19 @@ public:
 #endif // !BIN_H
 
 template<typename T>
-inline Bin<T>::Bin(int space)
+Bin<T>::Bin(int space)
 {
 	mNrOfItems = 0;
 	mSpaceLeft = space;
 }
 
 template<typename T>
-inline Bin<T>::~Bin()
+Bin<T>::~Bin()
 {
 }
 
 template<typename T>
-inline Item<T> Bin<T>::extractAt(int pos) throw(...)
+Item<T> Bin<T>::extractAt(int pos) throw(...)
 {
 	if (pos < 0 || mNrOfItems - 1 < pos)
 		throw "Position outside of range";
@@ -60,13 +60,13 @@ inline Item<T> Bin<T>::extractAt(int pos) throw(...)
 
 // Insert at position
 template<typename T>
-inline bool Bin<T>::insertAt(T element, int value, int pos) throw(...)
+bool Bin<T>::insertAt(T element, int value, int pos) throw(...)
 {
 	insertAt(Item<T>(element, value, pos));
 }
 
 template<typename T>
-inline bool Bin<T>::insertAt(Item<T> item, int pos) throw(...)
+bool Bin<T>::insertAt(Item<T> item, int pos) throw(...)
 {
 	if (pos < 0 || mNrOfItems < pos)
 		throw "Position outside of range";
@@ -84,13 +84,13 @@ inline bool Bin<T>::insertAt(Item<T> item, int pos) throw(...)
 
 // Insert with insertionsort
 template<typename T>
-inline bool Bin<T>::insertSort(T element, int value)
+bool Bin<T>::insertSort(T element, int value)
 {
 	insertSort(Item<T>(element, value));
 }
 
 template<typename T>
-inline bool Bin<T>::insertSort(Item<T> item)
+bool Bin<T>::insertSort(Item<T> item)
 {
 	bool insertSuccess = false;
 	if (mSpaceLeft - item.getValue() >= 0)
@@ -111,7 +111,7 @@ inline bool Bin<T>::insertSort(Item<T> item)
 }
 
 template<typename T>
-inline Item<T> Bin<T>::getAt(int pos) const throw(...)
+Item<T> Bin<T>::getAt(int pos) const throw(...)
 {
 	if (pos < 0 || mNrOfItems - 1 < pos)
 		throw "Position outside of range";
@@ -120,7 +120,7 @@ inline Item<T> Bin<T>::getAt(int pos) const throw(...)
 }
 
 template<typename T>
-inline void Bin<T>::getAll(Item<T> arr[], int cap) throw(...)
+void Bin<T>::getAll(Item<T> arr[], int cap) throw(...)
 {
 	if (cap < mNrOfItems)
 		throw "Array too small.";
@@ -129,25 +129,25 @@ inline void Bin<T>::getAll(Item<T> arr[], int cap) throw(...)
 }
 
 template<typename T>
-inline void Bin<T>::setSpace(int space)
+void Bin<T>::setSpace(int space)
 {
 	mSpaceLeft = space;
 }
 
 template<typename T>
-inline int Bin<T>::getSpace() const
+int Bin<T>::getSpace() const
 {
 	return mSpaceLeft;
 }
 
 template<typename T>
-inline int Bin<T>::getNrOfItems() const
+int Bin<T>::getNrOfItems() const
 {
 	return mNrOfItems;
 }
 
 template<typename T>
-inline bool Bin<T>::isEmpty() const
+bool Bin<T>::isEmpty() const
 {
 	return mNrOfItems != 0;
 }

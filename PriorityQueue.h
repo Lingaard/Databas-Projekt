@@ -120,13 +120,13 @@ T PriorityQueue<T>::extractMax() throw(...)
 }
 
 template<typename T>
-inline bool PriorityQueue<T>::isEmpty() const
+bool PriorityQueue<T>::isEmpty() const
 {
 	return mNrOfItems == 0;
 }
 
 template<typename T>
-inline void PriorityQueue<T>::printArr() const
+void PriorityQueue<T>::printArr() const
 {
 	for (int i = 1; i < mNrOfItems + 1; i++)
 	{

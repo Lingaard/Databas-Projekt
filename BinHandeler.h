@@ -11,10 +11,11 @@ private:
 	int mNrOfItems;
 	Item<T>* mItems;
 
-	void binToItems(int iBin, int iItem); // not used
 	void placeInItems(Item<T> item);
 	void itemToBin(int iItem, int iBin);
-	bool reAssign(int item[], int iPtr, int nrOfPtrs = 2);
+	bool reAssignRec(int pos[], int iPos, int nrOfPos = 2);
+	bool trySwitch(int pos[], int nrOfPos);
+
 public:
 	BinHandeler(int nrOfBins = 1, int nrOfItems = 20, int spaceInBin = 100);
 	BinHandeler(int nrOfBins, int nrOfDays, int nrOfItems, int spaceInBins[]);
@@ -25,25 +26,14 @@ public:
 	void putItemsInBins();
 	void getBin(T element[], int cap, int iBin) throw(...);
 	int getSpaceInBin(int iBin) const throw(...);
-	void reAssign(int nrOfPtrs = 2);
+	void reAssignRec(int nrOfPos = 2);
+	void reAssign(int nrOfPos = 2);
 };
 
 #endif // !BINHANDELER_H
 
 template<typename T>
-inline void BinHandeler<T>::binToItems(int iBin, int iItem)
-{
-	Item<T> item = mBins[iBin].extractAt(iItem);
-	int i;
-	for (i = mNrOfItems++; mItems[i - 1] < item && i > 0; i--)
-	{
-		mItems[i] = mItems[i - 1];
-	}
-	mItems[i] = item;
-}
-
-template<typename T>
-inline void BinHandeler<T>::placeInItems(Item<T> item)
+void BinHandeler<T>::placeInItems(Item<T> item)
 {
 	int i;
 	for (i = mNrOfItems++; mItems[i - 1] < item && i > 0; i--)
@@ -54,7 +44,7 @@ inline void BinHandeler<T>::placeInItems(Item<T> item)
 }
 
 template<typename T>
-inline void BinHandeler<T>::itemToBin(int iItem, int iBin)
+void BinHandeler<T>::itemToBin(int iItem, int iBin)
 {
 	mBins[iBin].insertSort(mItems[iItem]);
 	for (int i = iItem; i < mNrOfItems - 1; i++)
@@ -65,51 +55,59 @@ inline void BinHandeler<T>::itemToBin(int iItem, int iBin)
 }
 
 template<typename T>
-inline bool BinHandeler<T>::reAssign(int pos[], int iPtr, int nrOfPtrs)
+bool BinHandeler<T>::reAssignRec(int pos[], int iPos, int nrOfPos)
 {
 	// If a change occurs function returns true which stops and restarts the function.
 	// Otherwise returns false and move on.
-	if (iPtr < nrOfPtrs)
+	if (iPos < nrOfPos)
 	{
-		for (; pos[iPtr] < mNrOfItems - (nrOfPtrs - 1 - iPtr); pos[iPtr]++)
+		for (; pos[iPos] < mNrOfItems - (nrOfPos - 1 - iPos); pos[iPos]++)
 		{
-			if (reAssign(pos, iPtr + 1, nrOfPtrs) == true)
+			if (reAssignRec(pos, iPos + 1, nrOfPos) == true)
 				return true; 
 		}
 	}
 	else
 	{
-		int sum = 0;
-		int diff = 0;
-		Item<T> temp;
-		for (int i = 0; i < nrOfPtrs; i++)
-		{
-			sum += mItems[pos[i]].getValue();
-		}
-		for (int iBin = 0; iBin < mNrOfBins; iBin++)
-		{
-			for (int iItem = 0; iItem < mBins[iBin].getNrOfItems(); iItem++)
-			{
-				diff = sum - mBins[iBin].getAt(iItem).getValue();
-				if (diff > 0 && diff <= mBins[iBin].getSpace())
-				{
-					temp = mBins[iBin].extractAt(iItem);
-					for (int i = nrOfPtrs-1; i > -1; i--) // going from top to avoid sending wrong item due to resorting
-					{
-						itemToBin(pos[i], iBin);
-					}
-					placeInItems(temp);
-					//binToItems(iBin, iItem);
-					return true;
-				}
-			}
-		}
+		return trySwitch(pos, nrOfPos);			
 	}
 	return false;
 }
 
 template<typename T>
-inline BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfItems, int spaceInBin)
+bool BinHandeler<T>::trySwitch(int pos[], int nrOfPos)
+{
+	bool switchDone = false;
+	int sum = 0;
+	int diff = 0;
+	Item<T> temp;
+	Item<T>* p;
+	for (int i = 0; i < nrOfPos; i++)
+	{
+		sum += mItems[pos[i]].getValue();
+	}
+	for (int iBin = 0; iBin < mNrOfBins && !switchDone; iBin++)
+	{
+		for (int iItem = 0; iItem < mBins[iBin].getNrOfItems(); iItem++)
+		{
+			diff = sum - mBins[iBin].getAt(iItem).getValue();
+			if (diff > 0 && diff <= mBins[iBin].getSpace())
+			{
+				temp = mBins[iBin].extractAt(iItem);
+				for (int i = nrOfPos - 1; i > -1; i--) // going from top to avoid sending wrong item due to resorting
+				{
+					itemToBin(pos[i], iBin);
+				}
+				placeInItems(temp);
+				return true;				
+			}
+		}
+	}
+	return switchDone;
+}
+
+template<typename T>
+BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfItems, int spaceInBin)
 {
 	mBins = new Bin<T>[nrOfBins];
 	mNrOfBins = nrOfBins;
@@ -122,8 +120,9 @@ inline BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfItems, int spaceInBin)
 	}
 }
 
+
 template<typename T>
-inline BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfDays, int nrOfItems, int spaceInBins[])
+BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfDays, int nrOfItems, int spaceInBins[])
 {
 	mBins = new Bin<T>[nrOfBins*nrOfDays];
 	mNrOfBins = nrOfBins*nrOfDays;
@@ -137,20 +136,20 @@ inline BinHandeler<T>::BinHandeler(int nrOfBins, int nrOfDays, int nrOfItems, in
 }
 
 template<typename T>
-inline BinHandeler<T>::~BinHandeler()
+BinHandeler<T>::~BinHandeler()
 {
 	delete[]mBins;
 	delete[]mItems;
 }
 
 template<typename T>
-inline int BinHandeler<T>::getNrOfItemsInBin(int iBin) const
+int BinHandeler<T>::getNrOfItemsInBin(int iBin) const
 {
 	return mBins[iBin].getNrOfItems();
 }
 
 template<typename T>
-inline void BinHandeler<T>::insertItemsFromArray(T elementArr[], int spaceArr[], int nrOfItems)
+void BinHandeler<T>::insertItemsFromArray(T elementArr[], int spaceArr[], int nrOfItems)
 {
 	for (int i = 0; i < nrOfItems; i++)
 	{
@@ -160,7 +159,7 @@ inline void BinHandeler<T>::insertItemsFromArray(T elementArr[], int spaceArr[],
 
 // Puts in Items in Bins in order of first fit decreasing with a sorted array
 template<typename T>
-inline void BinHandeler<T>::putItemsInBins()
+void BinHandeler<T>::putItemsInBins()
 {
 	Item<T>* restItems = new Item<T>[mNrOfItems];
 	int nrOfRestItems = 0;
@@ -210,7 +209,7 @@ inline void BinHandeler<T>::putItemsInBins()
 }
 
 template<typename T>
-inline void BinHandeler<T>::getBin(T element[], int cap, int iBin) throw(...)
+void BinHandeler<T>::getBin(T element[], int cap, int iBin) throw(...)
 {
 	if (iBin < 0 || mNrOfBins <= iBin)
 		throw "Bin outside of range.";
@@ -230,7 +229,7 @@ inline void BinHandeler<T>::getBin(T element[], int cap, int iBin) throw(...)
 }
 
 template<typename T>
-inline int BinHandeler<T>::getSpaceInBin(int iBin) const throw(...)
+int BinHandeler<T>::getSpaceInBin(int iBin) const throw(...)
 {
 	if (iBin < 0 || mNrOfBins <= iBin)
 		throw "Bin outside of range.";
@@ -238,20 +237,65 @@ inline int BinHandeler<T>::getSpaceInBin(int iBin) const throw(...)
 }
 
 template<typename T>
-inline void BinHandeler<T>::reAssign(int nrOfPtrs)
+void BinHandeler<T>::reAssignRec(int nrOfPos)
 {
-	bool itemChanged = false;
-	int* pos = new int[nrOfPtrs];
-	do
-	{
-		for (int i = 0; i < nrOfPtrs; i++)
-		{
-			pos[i] = i;
-		}
-		itemChanged = reAssign(pos, 0, nrOfPtrs);
-	} while (itemChanged);
-	delete[]pos;
+    bool itemChanged = false;
+    int* pos = new int[nrOfPos];
+    do
+    {
+    	for (int i = 0; i < nrOfPos; i++)
+    	{
+    		pos[i] = i;
+    	}
+    	itemChanged = reAssignRec(pos, 0, nrOfPos);
+    } while (itemChanged);
+    delete[]pos;
 }
+
+template<typename T>
+void BinHandeler<T>::reAssign(int nrOfPos)
+{
+	// Function made to try other options. 
+	// Constantly slower than the recursive variant according to the tests.
+
+	bool keepGoing = true;
+	int* pos = new int[nrOfPos];
+	for (int i = 0; i < nrOfPos; i++)
+		pos[i] = i;
+	int lastPos = nrOfPos - 1;
+	int iPos;
+	while(pos[0] < mNrOfItems-(nrOfPos-1))
+	{
+		for (pos[lastPos] = pos[lastPos - 1] + 1; pos[lastPos] < mNrOfItems; pos[lastPos]++)
+		{
+			if (trySwitch(pos, nrOfPos))
+			{
+				for (int i = 0; i < nrOfPos; i++)
+					pos[i] = i;
+				if (nrOfPos > mNrOfItems)
+				{
+					pos[0] = mNrOfItems;
+				}
+			}
+		}
+
+		pos[lastPos - 1]++;
+		
+		keepGoing = true;
+		for (iPos = lastPos-1; iPos > 0 && keepGoing; iPos--)
+		{
+			if (pos[iPos] == mNrOfItems - (nrOfPos - 1 - iPos))
+			{
+				pos[iPos - 1]++;
+				pos[iPos] = pos[iPos - 1] + 1;
+			}
+			else
+				keepGoing = false;
+		}		
+		pos[lastPos] = pos[lastPos - 1] + 1;
+	}
+}
+
 
 
 
