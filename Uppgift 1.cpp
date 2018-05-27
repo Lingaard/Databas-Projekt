@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <crtdbg.h>
+#include <ctime>
+#include <chrono>
 #include "PriorityQueue.h"
 #include "Operation.h"
 #include "BinHandeler.h"
@@ -31,11 +33,7 @@ int main()
 	test(pq, bh3, nrOfOperations, 3, 2);
 	std::cout << "----------------------------------------------" << std::endl;
 
-	/*for (int i = 0; i < 6; i++)
-	{
-		std::cout << i / 2 + 1 << " " << i % 2 + 1 << std::endl;
 
-	}*/
 
 	getchar();
 	return 0;
@@ -81,10 +79,19 @@ void test(PriorityQueue<Operation>& pq, BinHandeler<Operation>& bh, int nrOfOper
 	{
 		printBin(bh, j, nrOfRooms);
 	}
-
-	/*for (int i = 2; i < 4; i++)
-		bh.reAssign(i);*/
-	bh.reAssign(2);
+	std::chrono::microseconds us;
+	
+	std::chrono::high_resolution_clock::time_point cstart, cend;
+	cstart = std::chrono::high_resolution_clock::now();
+	
+	for (int i = 2; i < 4; i++)
+		bh.reAssign(i);
+	
+	//bh.reAssign(2);
+	cend = std::chrono::high_resolution_clock::now();
+	std::chrono::microseconds diff = std::chrono::duration_cast<std::chrono::microseconds>(cend - cstart);
+									 
+	std::cout << "resorting took " << diff.count() << "us" << std::endl;
 	std::cout << std::endl << "Print after resorting: " << std::endl << std::endl;
 
 	for (int j = 0; j < totalRooms; j++)
